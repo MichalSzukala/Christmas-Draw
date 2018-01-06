@@ -12,6 +12,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PeopleListController implements Initializable {
 
@@ -71,12 +73,33 @@ public class PeopleListController implements Initializable {
     //data validation
     private boolean dataValidation() {
         boolean test = true;
-
+        String name = textFieldName.getText().trim();
+        String phone = textFieldPhone.getText().trim();
+        if(name.isEmpty()) {
+            alertWindow("Provide a name!!");
+            test = false;
+        }
+        else if(phone.isEmpty()){
+            alertWindow("Provide a phone number!!");
+            test = false;
+        }
+        else if(!emailValidation()){
+            alertWindow("Provide correct email address!!");
+            test = false;
+        }
 
         return test;
     }
 
+    //e-mails addresses validations
+    private boolean emailValidation(){
+        String email = textFieldEmail.getText().trim();
+        String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);
 
+        return matcher.matches();
+    }
 
     //window with messages
     private void alertWindow(String message){
