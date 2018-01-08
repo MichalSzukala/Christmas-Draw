@@ -5,12 +5,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -103,17 +102,41 @@ public class PeopleListController implements Initializable {
 
     //window with messages
     private void alertWindow(String message){
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Error Message");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     //window with draw results
     private void drawResultsWindow(){
+        Alert alertResults = new Alert(Alert.AlertType.INFORMATION);
+        alertResults.setTitle("Draw Results");
+        alertResults.setHeaderText(null);
 
+        String results = "";
+        int size = people.getSizeDrawResults();
+
+        for(int i = 0; i < size; i++)
+            results += people.getDrawResultAtIndex(i) + "\n";
+
+        alertResults.setContentText(results);
+        alertResults.showAndWait();
     }
 
     //confirmation window if user want to see draw results
     private void drawConfirmationWindow(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Box");
+        alert.setHeaderText(null);
+        alert.setContentText("Do you want to see results of the draw?");
+        Optional<ButtonType> result = alert.showAndWait();
 
+        if (result.get() == ButtonType.OK)
+            drawResultsWindow();
+        else
+            alert.close();
     }
 
 
