@@ -1,5 +1,6 @@
 package com.git.michalszukala.christmasgifts;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -7,7 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 
+import java.io.*;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -28,7 +31,7 @@ public class PeopleListController implements Initializable {
     @FXML private TextField textFieldPhone;
     @FXML private TextField textFieldEmail;
 
-    // even handler for Add button, it is adding a new person
+    // event handler for Add button, it is adding a new person
     @FXML
     public void addButton(ActionEvent event) {
 
@@ -48,16 +51,16 @@ public class PeopleListController implements Initializable {
         }
     }
 
-    // even handler for Delete button, it is deleting a person from the table
+    // event handler for Delete button, it is deleting a person from the table
     @FXML
-    public void deleteButton(){
+    public void deleteButton(ActionEvent event){
         ObservableList<People> selectedRow = tableOfPeople.getSelectionModel().getSelectedItems();
         People person = tableOfPeople.getSelectionModel().getSelectedItem();
         listOfPeople.removeAll(selectedRow);
         people.removeFromPeopleList(person);
     }
 
-    // even handler for Draw button, it is calling method responsible for drawing gifts from the People class
+    // event handler for Draw button, it is calling method responsible for drawing gifts from the People class
     @FXML
     public void drawButton(ActionEvent event) {
         if(listOfPeople.size() != 0) {
@@ -68,6 +71,63 @@ public class PeopleListController implements Initializable {
             alertWindow("You have nobody on the present's list!!");
         }
     }
+
+    // event handler for Menu "New",
+    @FXML
+    public void menuNew(ActionEvent event){
+        Optional<ButtonType> result = confirmationWindow("Do you really want to create new list of people");
+        if (result.get() == ButtonType.OK)
+            initializeGUI();
+    }
+
+    // event handler for Menu "Close",
+    @FXML
+    public void menuClose(ActionEvent event){
+        Optional<ButtonType> result = confirmationWindow("Do you really want to close the program");
+        if (result.get() == ButtonType.OK)
+            Platform.exit();
+    }
+
+    // event handler for Menu "Save",
+    @FXML
+    public void menuSave(ActionEvent event) {
+
+        File file = selectingFile("Save to File");
+
+        //need to implement
+    }
+
+    // event handler for Menu "Load",
+    @FXML
+    public void menuLoad(ActionEvent event) {
+
+        File file = selectingFile("Load a File");
+
+        //need to implement
+    }
+
+    //selecting the file
+    public File selectingFile(String boxMessage){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save to File");
+
+        // Set extension filter
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("txt files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        // Show open file dialog
+        File file = fileChooser.showOpenDialog(null);
+        return file;
+    }
+
+
+    //clear the GUI
+    public void initializeGUI(){
+        listOfPeople = FXCollections.observableArrayList();
+        people = new People();
+        tableOfPeople.setItems(listOfPeople);
+    }
+
 
     //data validation
     private boolean dataValidation() {
@@ -139,6 +199,19 @@ public class PeopleListController implements Initializable {
             alert.close();
     }
 
+    //general purpose confirmation window
+    private Optional<ButtonType> confirmationWindow(String text){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Box");
+        alert.setHeaderText(null);
+        alert.setContentText(text);
+        Optional<ButtonType> result = alert.showAndWait();
+
+        return result;
+    }
+
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -146,15 +219,9 @@ public class PeopleListController implements Initializable {
         tableColumnPhone.setCellValueFactory(new PropertyValueFactory<People, String>("phone"));
         tableColumnEmail.setCellValueFactory(new PropertyValueFactory<People, String>("email"));
 
-
         listOfPeople = FXCollections.observableArrayList();
         people = new People();
-
         tableOfPeople.setItems(listOfPeople);
-
-
-
-
     }
 }
 
