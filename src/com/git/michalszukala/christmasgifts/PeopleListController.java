@@ -94,7 +94,20 @@ public class PeopleListController implements Initializable {
 
         File file = selectingFile("Save to File");
 
-        //need to implement
+        if (file != null) {
+            try {
+                FileWriter writer = new FileWriter(file);
+
+                for (People person : listOfPeople) {
+                    String text = person.getName() + ";" + person.getPhone() + ";" + person.getEmail() + "\r\n";
+                    writer.write(text);
+                    writer.flush();
+                }
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     // event handler for Menu "Load",
@@ -103,13 +116,38 @@ public class PeopleListController implements Initializable {
 
         File file = selectingFile("Load a File");
 
-        //need to implement
+        if (file != null) {
+            try {
+                initializeGUI();
+                People addNewPerson = new People();
+                String line = null;
+                FileReader fileReader = new FileReader(file);
+                BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    String[] values = line.split(";");
+
+                    addNewPerson.setName(values[0]);
+                    addNewPerson.setPhone(values[1]);
+                    addNewPerson.setEmail(values[2]);
+
+                    listOfPeople.add(addNewPerson);
+                    people.setPerson(addNewPerson);
+                }
+
+                fileReader.close();
+                bufferedReader.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    //selecting the file
+    //opening file manager and selecting the file
     public File selectingFile(String boxMessage){
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save to File");
+        fileChooser.setTitle(boxMessage);
 
         // Set extension filter
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("txt files (*.txt)", "*.txt");
@@ -219,8 +257,10 @@ public class PeopleListController implements Initializable {
         tableColumnPhone.setCellValueFactory(new PropertyValueFactory<People, String>("phone"));
         tableColumnEmail.setCellValueFactory(new PropertyValueFactory<People, String>("email"));
 
+
         listOfPeople = FXCollections.observableArrayList();
         people = new People();
+
         tableOfPeople.setItems(listOfPeople);
     }
 }
