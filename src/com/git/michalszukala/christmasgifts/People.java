@@ -1,8 +1,12 @@
 package com.git.michalszukala.christmasgifts;
 
 
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 
 //Class contains data of every person we want send a gifts.  It's performing as well draw of gifts.
@@ -86,8 +90,8 @@ public class People {
 
             People firstPerson = drawList.get(0);
             People secondPerson = drawList.get(randomNumber(drawList.size()));
-            sendEmail(firstPerson.getEmail());
-            sendEmail(secondPerson.getEmail());
+            //sendEmail(firstPerson.getEmail());
+            //sendEmail(secondPerson.getEmail());
             luckyCouple = (firstPerson.getName() + " --- " + secondPerson.getName());
             luckyCouplesArray.add(luckyCouple);
             drawList.remove(firstPerson);
@@ -110,7 +114,51 @@ public class People {
     }
 
     //Send email to picked person
-    public void sendEmail(String emailAddress){
+    public void sendEmail(String receiverEmail){
+
+        // sets SMTP server properties
+        String host = "smtp.gmail.com";
+        String port = "465";
+
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", host); //SMTP Host
+        properties.put("mail.smtp.port", port);  //SMTP Port
+        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); //SSL Factory Class
+        properties.put("mail.smtp.socketFactory.port", "465"); //SSL Port
+        properties.put("mail.smtp.auth", "true"); //Enabling SMTP Authentication
+
+
+        String yourEmail = "";
+        String password = "";
+
+        // creates a new session with an authenticator
+        Authenticator auth = new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(yourEmail, password);
+            }
+        };
+
+        Session session = Session.getInstance(properties, auth);
+
+
+        // creates a new e-mail message
+
+        String emailTopic = "This year gift draw";
+        String emailMessage = "You are going to buy gift to ";
+
+        try{
+        Message msg = new MimeMessage(session);
+
+        msg.setFrom(new InternetAddress(yourEmail));
+        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiverEmail));
+        msg.setSubject(emailTopic);
+        msg.setText(emailMessage);
+
+        // sends the e-mail
+        Transport.send(msg);
+        } catch (MessagingException exp) {
+            throw new RuntimeException(exp);
+        }
 
     }
 }

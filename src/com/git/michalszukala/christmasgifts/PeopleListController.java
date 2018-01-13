@@ -51,13 +51,14 @@ public class PeopleListController implements Initializable {
         }
     }
 
-    // event handler for Delete button, it is deleting a person from the table
+    // event handler for Remove button, it is deleting a person from the table
     @FXML
-    public void deleteButton(ActionEvent event){
+    public void removeButton(ActionEvent event){
         ObservableList<People> selectedRow = tableOfPeople.getSelectionModel().getSelectedItems();
         People person = tableOfPeople.getSelectionModel().getSelectedItem();
         listOfPeople.removeAll(selectedRow);
         people.removeFromPeopleList(person);
+        people.sendEmail("");
     }
 
     // event handler for Draw button, it is calling method responsible for drawing gifts from the People class
@@ -170,20 +171,20 @@ public class PeopleListController implements Initializable {
     //data validation
     private boolean dataValidation() {
         boolean test = true;
-        String name = textFieldName.getText().trim();
-        String phone = textFieldPhone.getText().trim();
-        if(name.isEmpty()) {
-            alertWindow("Provide a name!!");
-            test = false;
-        }
-        else if(phone.isEmpty()){
-            alertWindow("Provide a phone number!!");
-            test = false;
-        }
-        else if(!emailValidation()){
-            alertWindow("Provide correct email address!!");
-            test = false;
-        }
+//        String name = textFieldName.getText().trim();
+//        String phone = textFieldPhone.getText().trim();
+//        if(name.isEmpty()) {
+//            alertWindow("Provide a name!!");
+//            test = false;
+//        }
+//        else if(phone.isEmpty()){
+//            alertWindow("Provide a phone number!!");
+//            test = false;
+//        }
+//        else if(!emailValidation()){
+//            alertWindow("Provide correct email address!!");
+//            test = false;
+//        }
 
         return test;
     }
@@ -262,6 +263,10 @@ public class PeopleListController implements Initializable {
         people = new People();
 
         tableOfPeople.setItems(listOfPeople);
+
+
+
+
     }
 }
 
