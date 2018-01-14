@@ -30,6 +30,11 @@ public class PeopleListController implements Initializable {
     @FXML private TextField textFieldName;
     @FXML private TextField textFieldPhone;
     @FXML private TextField textFieldEmail;
+    @FXML private TextField smtpHost;
+    @FXML private TextField ownEmail;
+    @FXML private PasswordField emailPassword;
+    @FXML private Label loginStatus;
+
 
     // event handler for Add button, it is adding a new person
     @FXML
@@ -58,7 +63,6 @@ public class PeopleListController implements Initializable {
         People person = tableOfPeople.getSelectionModel().getSelectedItem();
         listOfPeople.removeAll(selectedRow);
         people.removeFromPeopleList(person);
-        people.sendEmail("");
     }
 
     // event handler for Draw button, it is calling method responsible for drawing gifts from the People class
@@ -248,6 +252,10 @@ public class PeopleListController implements Initializable {
 
         return result;
     }
+
+
+
+
 
 
 
