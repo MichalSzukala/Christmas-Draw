@@ -1,13 +1,13 @@
 package com.git.michalszukala.christmasgifts;
 
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 
 //Class contains data of every person we want send a gifts.  It's performing as well draw of gifts.
 public class People {
@@ -17,6 +17,7 @@ public class People {
     private String email = "EMAIL";
     private List<People> peopleList = new ArrayList<>();
     private List<String> luckyCouplesArray;
+    private List<People> emailsList;
 
 
 
@@ -81,6 +82,8 @@ public class People {
     public void drawGifts(){
         List<People> drawList = new ArrayList<>();
         luckyCouplesArray = new ArrayList<>();
+        emailsList = new ArrayList<>();
+
         String luckyCouple;
 
         for(People x : peopleList)
@@ -89,16 +92,18 @@ public class People {
         while(drawList.size() > 1){
 
             People firstPerson = drawList.get(0);
+            emailsList.add(firstPerson);
             People secondPerson = drawList.get(randomNumber(drawList.size()));
-            //sendEmail(firstPerson.getEmail());
-            //sendEmail(secondPerson.getEmail());
+            emailsList.add(secondPerson);
             luckyCouple = (firstPerson.getName() + " --- " + secondPerson.getName());
             luckyCouplesArray.add(luckyCouple);
             drawList.remove(firstPerson);
             drawList.remove(secondPerson);
         }
-        if(drawList.size() > 0 )
-            luckyCouplesArray.add(drawList.get(0).getName() + " --- Don't have to buy any gift" );
+        if(drawList.size() > 0 ) {
+            emailsList.add(drawList.get(0));
+            luckyCouplesArray.add(drawList.get(0).getName() + " --- Don't have to buy any gift");
+        }
     }
 
     //Generates random number
@@ -114,10 +119,9 @@ public class People {
     }
 
     //Send email to picked person
-    public void sendEmail(String receiverEmail){
+    public void sendEmail(String receiverEmail, String yourEmail, String password, String host, String name){
 
-        // sets SMTP server properties
-        String host = "smtp.gmail.com";
+        // sets SMTP server properties. For google it is smtp.gmail.com
         String port = "465";
 
         Properties properties = new Properties();
@@ -126,10 +130,6 @@ public class People {
         properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); //SSL Factory Class
         properties.put("mail.smtp.socketFactory.port", "465"); //SSL Port
         properties.put("mail.smtp.auth", "true"); //Enabling SMTP Authentication
-
-
-        String yourEmail = "";
-        String password = "";
 
         // creates a new session with an authenticator
         Authenticator auth = new Authenticator() {
@@ -144,7 +144,7 @@ public class People {
         // creates a new e-mail message
 
         String emailTopic = "This year gift draw";
-        String emailMessage = "You are going to buy gift to ";
+        String emailMessage = "You are going to buy a gift to " + name + " this year";
 
         try{
         Message msg = new MimeMessage(session);
@@ -157,8 +157,39 @@ public class People {
         // sends the e-mail
         Transport.send(msg);
         } catch (MessagingException exp) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Box");
+            alert.setHeaderText(null);
+            alert.setContentText("Wrong email configuration!!");
+            Optional<ButtonType> result = alert.showAndWait();
+
             throw new RuntimeException(exp);
         }
 
+    }
+    // informing everybody to whom buy gifts
+    public void sendAllEmails(String yourEmail, String password, String host) {
+
+        while(emailsList.size() > 1){
+            People first = emailsList.get(0);
+            People second = emailsList.get(1);
+
+            String firstEmail = first.email;
+            String firstName = first.name;
+            String secondEmail = second.email;
+            String secondName = second.name;
+
+            sendEmail(firstEmail, yourEmail, password, host, secondName);
+            sendEmail(secondEmail, yourEmail, password, host, firstName);
+
+            emailsList.remove(first);
+            emailsList.remove(second);
+        }
+        if(emailsList.size() > 0 ) {
+            People first = emailsList.get(0);
+            String firstEmail = first.email;
+
+            sendEmail(firstEmail, yourEmail, password, host, "nobody");
+        }
     }
 }

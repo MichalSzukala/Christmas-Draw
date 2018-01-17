@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="dsn">
+  <library name="pop3">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/.idea/libraries/dsn.jar!/" />
+      <root url="jar://$PROJECT_DIR$/.idea/libraries/pop3.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

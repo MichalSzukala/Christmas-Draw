@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="dsn">
+  <library name="mailapi">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/.idea/libraries/dsn.jar!/" />
+      <root url="jar://$PROJECT_DIR$/.idea/libraries/mailapi.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="dsn">
+  <library name="imap">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/.idea/libraries/dsn.jar!/" />
+      <root url="jar://$PROJECT_DIR$/.idea/libraries/imap.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -34,9 +34,10 @@ public class PeopleListController implements Initializable {
     @FXML private TextField ownEmail;
     @FXML private PasswordField emailPassword;
     @FXML private Label loginStatus;
+    @FXML private Button buttonSendEmail;
 
 
-    // event handler for Add button, it is adding a new person
+    // event handler for Add button, it is adding a new person to table
     @FXML
     public void addButton(ActionEvent event) {
 
@@ -63,12 +64,17 @@ public class PeopleListController implements Initializable {
         People person = tableOfPeople.getSelectionModel().getSelectedItem();
         listOfPeople.removeAll(selectedRow);
         people.removeFromPeopleList(person);
+        if(listOfPeople.size() == 0)
+            buttonSendEmail.setDisable(true);
     }
 
     // event handler for Draw button, it is calling method responsible for drawing gifts from the People class
     @FXML
     public void drawButton(ActionEvent event) {
+
         if(listOfPeople.size() != 0) {
+            buttonSendEmail.setDisable(false);
+            loginStatus.setText("");
             people.drawGifts();
             drawConfirmationWindow();
         }
@@ -76,6 +82,19 @@ public class PeopleListController implements Initializable {
             alertWindow("You have nobody on the present's list!!");
         }
     }
+
+    // event handler for Send Emails button. It is sending email to everybody from the list about draw results
+    @FXML
+    public void sendEmailsButton(ActionEvent event) {
+        String emailAddress = ownEmail.getText();
+        String password = emailPassword.getText();
+        String smtp = smtpHost.getText();
+
+        people.sendAllEmails(emailAddress, password, smtp);
+        loginStatus.setText("Emails are sent");
+        confirmationWindow("Emails sent successfully!!");
+    }
+
 
     // event handler for Menu "New",
     @FXML
@@ -124,14 +143,14 @@ public class PeopleListController implements Initializable {
         if (file != null) {
             try {
                 initializeGUI();
-                People addNewPerson = new People();
+                People addNewPerson;
                 String line = null;
                 FileReader fileReader = new FileReader(file);
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
 
                 while ((line = bufferedReader.readLine()) != null) {
                     String[] values = line.split(";");
-
+                    addNewPerson = new People();
                     addNewPerson.setName(values[0]);
                     addNewPerson.setPhone(values[1]);
                     addNewPerson.setEmail(values[2]);
@@ -139,7 +158,6 @@ public class PeopleListController implements Initializable {
                     listOfPeople.add(addNewPerson);
                     people.setPerson(addNewPerson);
                 }
-
                 fileReader.close();
                 bufferedReader.close();
 
@@ -169,26 +187,29 @@ public class PeopleListController implements Initializable {
         listOfPeople = FXCollections.observableArrayList();
         people = new People();
         tableOfPeople.setItems(listOfPeople);
+        buttonSendEmail.setDisable(true);
+        loginStatus.setText("");
+
     }
 
 
     //data validation
     private boolean dataValidation() {
         boolean test = true;
-//        String name = textFieldName.getText().trim();
-//        String phone = textFieldPhone.getText().trim();
-//        if(name.isEmpty()) {
-//            alertWindow("Provide a name!!");
-//            test = false;
-//        }
-//        else if(phone.isEmpty()){
-//            alertWindow("Provide a phone number!!");
-//            test = false;
-//        }
-//        else if(!emailValidation()){
-//            alertWindow("Provide correct email address!!");
-//            test = false;
-//        }
+        String name = textFieldName.getText().trim();
+        String phone = textFieldPhone.getText().trim();
+        if(name.isEmpty()) {
+            alertWindow("Provide a name!!");
+            test = false;
+        }
+        else if(phone.isEmpty()){
+            alertWindow("Provide a phone number!!");
+            test = false;
+        }
+        else if(!emailValidation()){
+            alertWindow("Provide correct email address!!");
+            test = false;
+        }
 
         return test;
     }
@@ -233,13 +254,14 @@ public class PeopleListController implements Initializable {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Box");
         alert.setHeaderText(null);
-        alert.setContentText("Do you want to see results of the draw?");
+        alert.setContentText("Draw results are ready to send to everybody.\nDo you want to see results?");
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.get() == ButtonType.OK)
             drawResultsWindow();
         else
             alert.close();
+
     }
 
     //general purpose confirmation window
@@ -253,28 +275,13 @@ public class PeopleListController implements Initializable {
         return result;
     }
 
-
-
-
-
-
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tableColumnName.setCellValueFactory(new PropertyValueFactory<People, String>("name"));
         tableColumnPhone.setCellValueFactory(new PropertyValueFactory<People, String>("phone"));
         tableColumnEmail.setCellValueFactory(new PropertyValueFactory<People, String>("email"));
 
-
-        listOfPeople = FXCollections.observableArrayList();
-        people = new People();
-
-        tableOfPeople.setItems(listOfPeople);
-
-
-
-
+        initializeGUI();
     }
 }
 

@@ -101,15 +101,15 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </TextField>
-            <Label fx:id="loginStatus" textFill="#0d752b">
+            <Label fx:id="loginStatus" prefHeight="20.0" prefWidth="129.0" textFill="#0d752b">
                <VBox.margin>
-                  <Insets bottom="10.0" left="70.0" right="10.0" />
+                  <Insets bottom="10.0" left="45.0" right="10.0" />
                </VBox.margin>
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
-            <Button fx:id="buttonSendEmail" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Send Emails">
+            <Button fx:id="buttonSendEmail" mnemonicParsing="false" onAction="#sendEmailsButton" prefHeight="25.0" prefWidth="96.0" text="Send Emails">
                <VBox.margin>
                   <Insets left="45.0" />
                </VBox.margin>
