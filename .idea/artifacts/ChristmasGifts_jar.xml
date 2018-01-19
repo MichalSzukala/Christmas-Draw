@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ChristmasGifts:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ChristmasGifts_jar</output-path>
+    <root id="archive" name="ChristmasGifts.jar">
+      <element id="module-output" name="ChristmasGifts" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/.idea/libraries/smtp.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/.idea/libraries/pop3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/.idea/libraries/mail.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/.idea/libraries/imap.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/.idea/libraries/dsn.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/.idea/libraries/mailapi.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
